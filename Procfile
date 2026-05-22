@@ -1,0 +1,1 @@
+web: gunicorn fpirsg_portal.wsgi

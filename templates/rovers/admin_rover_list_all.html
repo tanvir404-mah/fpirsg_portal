@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block title %}Rover Management - FPIRSG{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <div class="mb-8">
+        <a href="{% url 'dashboard' %}"
+            class="text-primary hover:text-green-700 font-medium mb-4 inline-flex items-center">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+        </a>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Rover Management</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">View and manage all registered rovers</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div class="flex items-center">
+                <i class="fas fa-users text-3xl text-blue-500 mr-4"></i>
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Total Rovers</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle text-3xl text-green-500 mr-4"></i>
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Approved</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ approved_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div class="flex items-center">
+                <i class="fas fa-clock text-3xl text-yellow-500 mr-4"></i>
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Pending</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ pending_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+                <select name="status"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Rovers</option>
+                    <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved Only
+                    </option>
+                    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending Only</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Department</label>
+                <select name="department"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option value="">All Departments</option>
+                    <option value="CST" {% if department_filter == 'CST' %}selected{% endif %}>CST</option>
+                    <option value="Civil" {% if department_filter == 'Civil' %}selected{% endif %}>Civil</option>
+                    <option value="Electrical" {% if department_filter == 'Electrical' %}selected{% endif %}>Electrical
+                    </option>
+                    <option value="Mechanical" {% if department_filter == 'Mechanical' %}selected{% endif %}>Mechanical
+                    </option>
+                    <option value="Power" {% if department_filter == 'Power' %}selected{% endif %}>Power</option>
+                    <option value="Electronics" {% if department_filter == 'Electronics' %}selected{% endif %}>Electronics
+                    </option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Session</label>
+                <input type="text" name="session" value="{{ session_filter }}" placeholder="e.g., 2023-24"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            </div>
+
+            <div>
+                <button type="submit"
+                    class="w-full px-4 py-2 bg-primary hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
+                    <i class="fas fa-filter mr-2"></i>Filter
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Rovers Table -->
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Rover</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Roll No</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Department</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Session</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Status</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Form No</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-right text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for rover in rovers %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    {% if rover.profile_pic %}
+                                    <img class="h-10 w-10 rounded-full object-cover" src="{{ rover.profile_pic.url }}"
+                                        alt="">
+                                    {% else %}
+                                    <div
+                                        class="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-300 font-bold">
+                                        {{ rover.name_en|make_list|first }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">{{ rover.name_en }}
+                                    </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">{{ rover.email }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                            {{ rover.roll_no }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                            {{ rover.department }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                            {{ rover.session }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if rover.is_approved %}
+                            <span
+                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                <i class="fas fa-check-circle mr-1"></i> Approved
+                            </span>
+                            {% else %}
+                            <span
+                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                <i class="fas fa-clock mr-1"></i> Pending
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
+                            {% if rover.form_number %}
+                            <span class="font-mono text-primary dark:text-green-400">{{ rover.form_number }}</span>
+                            {% else %}
+                            <span class="text-gray-400">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex justify-end space-x-2">
+                                {% if not rover.is_approved %}
+                                <form method="post" action="{% url 'approve_rover' rover.pk %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                        class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 bg-green-100 dark:bg-green-900/30 p-2 rounded-lg transition-colors"
+                                        title="Approve">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </form>
+                                <form method="post" action="{% url 'reject_rover' rover.pk %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                        class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 bg-red-100 dark:bg-red-900/30 p-2 rounded-lg transition-colors"
+                                        title="Reject"
+                                        onclick="return confirm('Are you sure you want to reject this registration?');">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                            No rovers found with the selected filters.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Rover Fees - Admin{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto p-6">
+
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Rover Fees Management</h1>
+    <a href="{% url 'add_rover_fee' %}"
+      class="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg shadow-sm transition duration-150 ease-in-out flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Create New Fee
+    </a>
+  </div>
+
+  <form method="get" class="mb-4 flex items-center space-x-4">
+    <label class="text-sm font-medium">Status:</label>
+    <select name="status" class="border rounded px-2 py-1 dark:bg-gray-700 dark:text-white">
+      <option value="" {% if not status_filter %}selected{% endif %}>All</option>
+      <option value="PENDING" {% if status_filter == 'PENDING' %}selected{% endif %}>Pending</option>
+<option value="PAID" {% if status_filter == 'PAID' %}selected{% endif %}>Paid</option>
+    </select>
+    <button type="submit" class="bg-primary text-white px-3 py-1 rounded">Filter</button>
+  </form>
+
+  <table class="w-full text-left border-collapse">
+    <thead class="bg-gray-100 dark:bg-gray-800">
+      <tr>
+        <th class="p-2">Rover</th>
+        <th class="p-2">Amount</th>
+        <th class="p-2">Frequency</th>
+        <th class="p-2">Status</th>
+        <th class="p-2">Due Date</th>
+        <th class="p-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for fee in rover_fees %}
+      <tr class="border-t">
+        <td class="p-2">{{ fee.rover.name_en }} ({{ fee.rover.roll_no }})</td>
+        <td class="p-2">৳{{ fee.amount }}</td>
+        <td class="p-2">{{ fee.get_frequency_display }}</td>
+        <td class="p-2">
+          {% if fee.status == 'PENDING' %}
+          <span
+            class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Pending</span>
+          {% else %}
+          <span
+            class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Paid</span>
+          {% endif %}
+        </td>
+        <td class="p-2">{{ fee.due_date }}</td>
+        <td class="p-2">
+          {% if fee.status == 'PENDING' %}
+          <form method="post" action="{% url 'rover_fee_mark_paid' fee.id %}" class="inline">
+            {% csrf_token %}
+            <button type="submit"
+              class="bg-green-600 hover:bg-green-700 text-white text-sm px-3 py-1 rounded shadow-sm transition">Mark
+              Paid</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="p-2 text-center">No fees found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

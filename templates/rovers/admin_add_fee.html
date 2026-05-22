@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Add New Fee - Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto p-6">
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden">
+
+        <div class="bg-green-600 px-6 py-4">
+            <h4 class="text-lg font-semibold text-white mb-0 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                নতুন রোভার ফি যুক্ত করুন
+            </h4>
+        </div>
+
+        <div class="p-6">
+            <form method="POST" class="space-y-5">
+                {% csrf_token %}
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">রোভার সিলেক্ট
+                        করুন</label>
+                    <div class="relative rounded-md shadow-sm">
+                        {{ form.rover }}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">টাকার পরিমাণ
+                            (BDT)</label>
+                        {{ form.amount }}
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">ফ্রিকোয়েন্সি</label>
+                        {{ form.frequency }}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">লাস্ট ডেট (Due
+                        Date)</label>
+                    {{ form.due_date }}
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button type="submit"
+                        class="w-full sm:w-auto flex-1 bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2.5 rounded-lg shadow-sm transition duration-150 ease-in-out text-center justify-center inline-flex items-center">
+                        ফিস্ জেনারেট করুন
+                    </button>
+                    <a href="{% url 'fundtransaction_list' %}"
+                        class="w-full sm:w-auto text-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium px-5 py-2.5 rounded-lg transition duration-150 ease-in-out">
+                        ফিরে যান
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

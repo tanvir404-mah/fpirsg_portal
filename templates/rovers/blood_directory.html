@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Blood Search Directory - FPIRSG{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <div class="mb-8 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-200 dark:border-gray-700 pb-5">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Blood Search Directory</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Advanced search for Approved Rovers based on blood group.</p>
+        </div>
+        
+        <!-- Export Button -->
+        <a href="?export=csv{% if blood_group_param %}&blood_group={{ blood_group_param }}{% endif %}{% if department_param %}&department={{ department_param }}{% endif %}{% if session_param %}&session={{ session_param }}{% endif %}" 
+           class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Export to CSV
+        </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Blood Group</label>
+                <select name="blood_group" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option value="">All Blood Groups</option>
+                    <option value="A+" {% if blood_group_param == 'A+' %}selected{% endif %}>A+</option>
+                    <option value="A-" {% if blood_group_param == 'A-' %}selected{% endif %}>A-</option>
+                    <option value="B+" {% if blood_group_param == 'B+' %}selected{% endif %}>B+</option>
+                    <option value="B-" {% if blood_group_param == 'B-' %}selected{% endif %}>B-</option>
+                    <option value="O+" {% if blood_group_param == 'O+' %}selected{% endif %}>O+</option>
+                    <option value="O-" {% if blood_group_param == 'O-' %}selected{% endif %}>O-</option>
+                    <option value="AB+" {% if blood_group_param == 'AB+' %}selected{% endif %}>AB+</option>
+                    <option value="AB-" {% if blood_group_param == 'AB-' %}selected{% endif %}>AB-</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Department</label>
+                <select name="department" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option value="">All Departments</option>
+                    <option value="CST" {% if department_param == 'CST' %}selected{% endif %}>Computer Science & Technology</option>
+                    <option value="Civil" {% if department_param == 'Civil' %}selected{% endif %}>Civil Engineering</option>
+                    <option value="Electrical" {% if department_param == 'Electrical' %}selected{% endif %}>Electrical Engineering</option>
+                    <option value="Mechanical" {% if department_param == 'Mechanical' %}selected{% endif %}>Mechanical Engineering</option>
+                    <option value="Power" {% if department_param == 'Power' %}selected{% endif %}>Power Engineering</option>
+                    <option value="Electronics" {% if department_param == 'Electronics' %}selected{% endif %}>Electronics Engineering</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Session</label>
+                <input type="text" name="session" value="{{ session_param|default:'' }}" placeholder="e.g. 2023-24" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            </div>
+            <div class="flex space-x-2">
+                <button type="submit" class="flex-1 bg-primary hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    Filter
+                </button>
+                <a href="{% url 'blood_directory' %}" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    Reset
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Table -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-900/50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rover Info</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Academic</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Blood Group</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Contact</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for profile in profiles %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    {% if profile.profile_pic %}
+                                        <img class="h-10 w-10 rounded-full object-cover" src="{{ profile.profile_pic.url }}" alt="">
+                                    {% else %}
+                                        <div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 font-bold">
+                                            {{ profile.name_en|make_list|first }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">{{ profile.name_en }}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">{{ profile.form_number }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900 dark:text-white">{{ profile.department }}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">Session: {{ profile.session }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+                                {{ profile.blood_group }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <div>{{ profile.mobile }}</div>
+                            <div class="text-xs">{{ profile.email }}</div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                            No matching records found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
