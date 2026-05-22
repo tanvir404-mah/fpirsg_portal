@@ -31,9 +31,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://fpirsg-portal.onrender.com',
 ]
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+
 
 # Application definition
 
@@ -147,3 +145,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+
+# লাইভ সার্ভারে লগইন ও রিডাইরেক্ট ৫০০ এরর ফিক্স
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
