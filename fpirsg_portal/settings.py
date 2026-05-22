@@ -26,8 +26,14 @@ SECRET_KEY = 'django-insecure-*q=$)y=k1elvx8_dsudu!2d8&bz)$v8im=a7epl%@6rb4z#a^u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*'] # Update with your domain or IP address in production
+ALLOWED_HOSTS = ['fpirsg-portal.onrender.com', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = [
+    'https://fpirsg-portal.onrender.com',
+]
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 # Application definition
 
