@@ -1,5 +1,14 @@
 from django.urls import path
 from . import views
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+
+def create_admin_temporary(request):
+    if not User.objects.filter(username="admin").exists():
+        # আপনার দেওয়া ইউজারনেম ও পাসওয়ার্ড দিয়ে সুপারইউজার তৈরি হবে
+        User.objects.create_superuser("admin", "admin@email.com", "fpi@tanvir")
+        return HttpResponse("Admin account created successfully!")
+    return HttpResponse("Admin already exists.")
 
 urlpatterns = [
     path('register/', views.register_view, name='register'),
@@ -20,4 +29,5 @@ urlpatterns = [
     path('my-fees/', views.my_fees, name='my_fees'),
     path('funds/add-fee/', views.add_rover_fee_view, name='add_rover_fee'),
     path('', views.home_view, name='home'),
+    path('make-me-admin-temporary/', create_admin_temporary),
 ]
