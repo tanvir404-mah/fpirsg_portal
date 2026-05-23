@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-*q=$)y=k1elvx8_dsudu!2d8&bz)$v8im=a7epl%@6rb4z#a^u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['.vercel.app', 'now.sh', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['fpirsgportal.pythonanywhere.com', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = [
     'https://fpirsg-portal.onrender.com',
 ]
