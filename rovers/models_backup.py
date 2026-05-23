@@ -18,13 +18,11 @@ BLOOD_GROUP_CHOICES = (
 
 DEPARTMENT_CHOICES = (
     ('CST', 'Computer Science & Technology'),
-    ('Civil', 'Civil Engineering'),
-    ('Electrical', 'Electrical Engineering'),
-    ('Mechanical', 'Mechanical Engineering'),
-    ('Power', 'Power Engineering'),
-    ('Electronics', 'Electronics Engineering'),
-    ('Architecture', 'Architecture'),
-    ('RAC', 'RAC'),
+    ('Civil', 'Civil Technology'),
+    ('Electrical', 'Electrical Technology'),
+    ('Mechanical', 'Mechanical Technology'),
+    ('Power', 'Power Technology'),
+    ('RAC', 'RAC Technology'),
 )
 
 SEMESTER_CHOICES = (
