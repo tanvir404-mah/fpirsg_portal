@@ -130,7 +130,8 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        # ম্যানিফেস্ট ক্র্যাশ বন্ধ করতে শুধু কম্প্রেসড স্টোরেজ ব্যবহার করা হলো
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
