@@ -13,6 +13,7 @@ def create_admin_temporary(request):
 urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('dashboard/profile/', views.rover_profile_view, name='rover_profile'),
     path('blood-directory/', views.blood_directory_view, name='blood_directory'),
     path('approve/<int:pk>/', views.approve_rover, name='approve_rover'),
     path('reject/<int:pk>/', views.reject_rover, name='reject_rover'),
@@ -25,6 +26,8 @@ urlpatterns = [
     path('fee-structure/', views.fee_structure_edit, name='fee_structure_edit'),
     path('rover-fees/', views.rover_fees_list, name='rover_fees_list'),
     path('rover-list/', views.rover_list_all, name='rover_list_all'),
+    path('rover-list/<int:pk>/', views.rover_profile_detail_view, name='rover_profile_detail'),
+    path('rover-verification/', views.rover_verification_dashboard, name='rover_verification'),
     path('rover-fee/<int:fee_id>/mark-paid/', views.rover_fee_mark_paid, name='rover_fee_mark_paid'),
     path('my-fees/', views.my_fees, name='my_fees'),
     path('funds/add-fee/', views.add_rover_fee_view, name='add_rover_fee'),

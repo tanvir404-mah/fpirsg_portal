@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import json
 
 BLOOD_GROUP_CHOICES = (
+    ('', '-- Select Blood Group --'),
     ('A+', 'A+'),
     ('A-', 'A-'),
     ('B+', 'B+'),
@@ -17,17 +18,17 @@ BLOOD_GROUP_CHOICES = (
 )
 
 DEPARTMENT_CHOICES = (
+    ('', '-- Select Session --'),
     ('CST', 'Computer Science & Technology'),
     ('Civil', 'Civil Technology'),
     ('Electrical', 'Electrical Technology'),
     ('Mechanical', 'Mechanical Technology'),
     ('Power', 'Power Technology'),
-    ('Electronics', 'Electronics Technology'),
-    ('Architecture', 'Architecture Technology'),
     ('RAC', 'RAC Technology'),
 )
 
 SEMESTER_CHOICES = (
+    ('', '-- Select Semester --'),
     ('1st', '1st Semester'),
     ('2nd', '2nd Semester'),
     ('3rd', '3rd Semester'),
@@ -39,9 +40,50 @@ SEMESTER_CHOICES = (
 )
 
 SHIFT_CHOICES = (
+    ('', '-- Select Shift --'),
     ('1st', '1st Shift'),
     ('2nd', '2nd Shift'),
 )
+
+SESSION_CHOICES = [
+        ('', 'Select Session'), # এটি ইউজারকে প্রথমে দেখাবে, কিন্তু সাবমিট করতে দেবে না
+        ('2022-23', '2022-23'),
+        ('2023-24', '2023-24'),
+        ('2024-25', '2024-25'),
+        ('2025-26', '2025-26'),
+        ('2026-27', '2026-27'),
+        ('2027-28', '2027-28'),
+        ('2028-29', '2028-29'),
+        ('2029-30', '2029-30'),
+    ]
+    
+session = models.CharField(
+        max_length=7, 
+        choices=SESSION_CHOICES,
+        blank=False,  # খালি রাখা যাবে না
+        null=False
+    )
+# rank,stage badge model
+# ১. র‍্যাংক মডেল (Member, Rover Mate, Upodol Neta ইত্যাদি)
+class RoverRank(models.Model):
+    title = models.CharField(max_length=50, unique=True, verbose_name="Rank Title")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = "Rover Ranks"
+
+
+# ২. স্টেজ বা স্তর মডেল (সদস্য স্তর, প্রশিক্ষণ স্তর, সেবা স্তর ইত্যাদি)
+class RoverStage(models.Model):
+    title = models.CharField(max_length=50, unique=True, verbose_name="Stage Title")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = "Rover Stages"
 
 class RoverProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='rover_profile')
@@ -82,6 +124,8 @@ class RoverProfile(models.Model):
     scout_experience = models.BooleanField(default=False)
     scout_badge = models.CharField(max_length=100, blank=True, null=True)
     other_skills = models.TextField(blank=True, null=True)
+    rank = models.ForeignKey(RoverRank, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Current Rank")
+    stage = models.ForeignKey(RoverStage, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Current Stage")
     
     profile_pic = models.ImageField(upload_to='profile_pics/')
     is_approved = models.BooleanField(default=False)
@@ -213,3 +257,26 @@ def create_initial_fee_on_approval(sender, instance, created, **kwargs):
                     )
         except FeeStructure.DoesNotExist:
             pass
+
+# leader model
+
+class LeaderBoard(models.Model):
+    ROLE_CHOICES = [
+        ('GP', 'Group President (গ্রুপ সভাপতি)'),
+        ('GS', 'Group Secretary (গ্রুপ সম্পাদক)'),
+        ('RSL', 'Rover Scout Leader (RSL)'),
+        ('SRM', 'Senior Rover Mate (SRM)'),
+    ]
+    name = models.CharField(max_length=100)
+    role = models.CharField(max_length=3, choices=ROLE_CHOICES) # চয়েস আপডেট করা হয়েছে
+    image = models.ImageField(upload_to='leaders/')
+    
+    phone = models.CharField(max_length=15, blank=True, null=True, help_text="e.g., +88017XXXXXXXX")
+    email = models.EmailField(blank=True, null=True)
+    facebook_url = models.URLField(blank=True, null=True)
+    
+    order = models.IntegerField(default=0, help_text="Order to display (e.g., 1 for President, 2 for Secretary...)")
+
+    def __str__(self):
+        return f"{self.name} - {self.get_role_display()}"
+

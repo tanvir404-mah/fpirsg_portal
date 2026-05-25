@@ -1,0 +1,417 @@
+{% extends 'base.html' %}
+
+{% block title %}Rover Profile - {{ rover.name_en }} | FPIRSG{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-6 px-4">
+    <div class="mb-8">
+        <a href="{% url 'rover_list_all' %}"
+            class="text-primary hover:text-green-700 font-medium mb-4 inline-flex items-center">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Rover List
+        </a>
+    </div>
+
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mb-6">
+        <div class="bg-gradient-to-r from-primary to-green-600 h-32"></div>
+
+        <div class="px-6 pb-6">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between -mt-16 md:-mt-12 mb-6">
+                <div class="flex items-end space-x-4">
+                    {% if rover.profile_pic %}
+                    <img src="{{ rover.profile_pic.url }}" alt="{{ rover.name_en }}"
+                        class="h-32 w-32 rounded-lg object-cover border-4 border-white dark:border-gray-800 shadow-lg">
+                    {% else %}
+                    <div
+                        class="h-32 w-32 rounded-lg bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 text-4xl font-bold border-4 border-white dark:border-gray-800">
+                        {{ rover.name_en|make_list|first }}
+                    </div>
+                    {% endif %}
+                    <div class="mb-2">
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ rover.name_en }}</h1>
+                        <p class="text-gray-600 dark:text-gray-400">{{ rover.name_bn }}</p>
+                    </div>
+                </div>
+
+                <div class="mt-4 md:mt-0 flex items-center space-x-3">
+                    {% if rover.is_approved %}
+                    <span
+                        class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                        <i class="fas fa-check-circle mr-2"></i>Approved
+                    </span>
+                    {% else %}
+                    <span
+                        class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                        <i class="fas fa-clock mr-2"></i>Pending
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Roll No</p>
+                    <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.roll_no }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Form Number</p>
+                    <p class="text-lg font-semibold text-gray-900 dark:text-white font-mono">{{ rover.form_number|default:"-" }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Department</p>
+                    <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.department }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Session</p>
+                    <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.session }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Rover Stage</p>
+                    <div class="mt-1">
+                        {% if rover.stage %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+                            {{ rover.stage }}
+                        </span>
+                        {% else %}
+                        <span class="text-sm text-gray-400 italic">Not Assigned</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Rover Rank</p>
+                    <div class="mt-1">
+                        {% if rover.rank %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
+                            {{ rover.rank }}
+                        </span>
+                        {% else %}
+                        <span class="text-sm text-gray-400 italic">Not Assigned</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2
+                    class="text-xl font-bold text-gray-900 dark:text-white mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <i class="fas fa-user mr-2 text-primary"></i>Personal Information
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Full Name (English)</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.name_en }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">পূর্ণনাম (বাংলা)</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.name_bn }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Father's Name (English)</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.father_name_en }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">পিতার নাম (বাংলা)</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.father_name_bn }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Mother's Name (English)</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.mother_name_en }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">মাতার নাম (বাংলা)</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.mother_name_bn }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Date of Birth</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.dob|date:"d M, Y" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Religion</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.religion }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Blood Group</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">
+                            <span
+                                class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 font-bold">
+                                {{ rover.blood_group }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2
+                    class="text-xl font-bold text-gray-900 dark:text-white mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <i class="fas fa-phone mr-2 text-primary"></i>Contact Information
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Mobile Number</p>
+                        <a href="tel:{{ rover.mobile }}"
+                            class="text-lg font-semibold text-primary hover:text-green-700">
+                            {{ rover.mobile }}
+                        </a>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Guardian Mobile</p>
+                        <a href="tel:{{ rover.guardian_mobile }}"
+                            class="text-lg font-semibold text-primary hover:text-green-700">
+                            {{ rover.guardian_mobile }}
+                        </a>
+                    </div>
+                    <div class="md:col-span-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Email Address</p>
+                        <a href="mailto:{{ rover.email }}"
+                            class="text-lg font-semibold text-primary hover:text-green-700 break-all">
+                            {{ rover.email }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2
+                    class="text-xl font-bold text-gray-900 dark:text-white mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <i class="fas fa-graduation-cap mr-2 text-primary"></i>Academic Information
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Polytechnic Roll No</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.roll_no }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Department</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.department }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Session</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.session }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Semester</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.get_semester_display }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Shift</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.get_shift_display }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">SSC Passing Year</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.ssc_year }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">SSC GPA</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.ssc_gpa }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2
+                    class="text-xl font-bold text-gray-900 dark:text-white mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <i class="fas fa-map-marker-alt mr-2 text-primary"></i>Address Information
+                </h2>
+
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Present Address</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-4 border-primary">
+                        {% if rover.present_address %}
+                        {% for key, value in rover.present_address.items %}
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ key|title }}</p>
+                            <p class="font-semibold text-gray-900 dark:text-white">{{ value }}</p>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <p class="text-gray-500 dark:text-gray-400">No address provided</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Permanent Address</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-4 border-primary">
+                        {% if rover.permanent_address %}
+                        {% for key, value in rover.permanent_address.items %}
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ key|title }}</p>
+                            <p class="font-semibold text-gray-900 dark:text-white">{{ value }}</p>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <p class="text-gray-500 dark:text-gray-400">No address provided</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2
+                    class="text-xl font-bold text-gray-900 dark:text-white mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <i class="fas fa-star mr-2 text-primary"></i>Experience & Skills
+                </h2>
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <div
+                            class="flex-shrink-0 w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-child text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Cub Experience</p>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-white">
+                                {% if rover.cub_experience %}
+                                <span class="text-green-600 dark:text-green-400"><i class="fas fa-check"></i> Yes</span>
+                                {% if rover.cub_badge %} - {{ rover.cub_badge }}{% endif %}
+                                {% else %}
+                                <span class="text-gray-600 dark:text-gray-400">No</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <div
+                            class="flex-shrink-0 w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-medal text-purple-600 dark:text-purple-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Scout Experience</p>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-white">
+                                {% if rover.scout_experience %}
+                                <span class="text-green-600 dark:text-green-400"><i class="fas fa-check"></i> Yes</span>
+                                {% if rover.scout_badge %} - {{ rover.scout_badge }}{% endif %}
+                                {% else %}
+                                <span class="text-gray-600 dark:text-gray-400">No</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    {% if rover.other_skills %}
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Other Skills</p>
+                        <p class="text-gray-900 dark:text-white whitespace-pre-wrap">{{ rover.other_skills }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2
+                    class="text-xl font-bold text-gray-900 dark:text-white mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <i class="fas fa-cog mr-2 text-primary"></i>Account Status
+                </h2>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Status</p>
+                        <div class="mt-2">
+                            {% if rover.is_approved %}
+                            <span
+                                class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                <i class="fas fa-check-circle mr-2"></i>Approved
+                            </span>
+                            {% else %}
+                            <span
+                                class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-semibold bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                <i class="fas fa-hourglass-half mr-2"></i>Pending Approval
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                        <div>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Stage</p>
+                            <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-1">
+                                {{ rover.stage|default:"Not Assigned" }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Rank</p>
+                            <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 mt-1">
+                                {{ rover.rank|default:"Not Assigned" }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-gray-100 dark:border-gray-700">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Form Number</p>
+                        <p class="text-lg font-mono font-semibold text-gray-900 dark:text-white">{{ rover.form_number|default:"Not assigned yet" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Username</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.user.username }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Registered On</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.created_at|date:"d M, Y | H:i" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Last Updated</p>
+                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ rover.updated_at|date:"d M, Y | H:i" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {% if fees %}
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2
+                    class="text-xl font-bold text-gray-900 dark:text-white mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <i class="fas fa-coins mr-2 text-primary"></i>Fee Summary
+                </h2>
+                <div class="space-y-2 mb-4">
+                    <div class="flex justify-between items-center p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                        <p class="text-sm font-medium text-yellow-800 dark:text-yellow-300">Pending Fees</p>
+                        <p class="text-lg font-bold text-yellow-800 dark:text-yellow-300">{{ fees|length }}</p>
+                    </div>
+                </div>
+                <a href="{% url 'rover_fees_list' %}?status=PENDING"
+                    class="block w-full text-center px-4 py-2 bg-primary hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
+                    <i class="fas fa-list mr-2"></i>View All Fees
+                </a>
+            </div>
+            {% endif %}
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                <h2
+                    class="text-xl font-bold text-gray-900 dark:text-white mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <i class="fas fa-bolt mr-2 text-primary"></i>Quick Actions
+                </h2>
+                <div class="space-y-2">
+                    {% if not rover.is_approved %}
+                    <form method="post" action="{% url 'approve_rover' rover.pk %}" class="block">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
+                            <i class="fas fa-check-circle mr-2"></i>Approve
+                        </button>
+                    </form>
+                    <form method="post" action="{% url 'reject_rover' rover.pk %}" class="block"
+                        onsubmit="return confirm('Are you sure you want to reject this registration?');">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors">
+                            <i class="fas fa-times-circle mr-2"></i>Reject
+                        </button>
+                    </form>
+                    {% endif %}
+                    <a href="{% url 'rover_list_all' %}"
+                        class="block w-full text-center px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-medium rounded-lg transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

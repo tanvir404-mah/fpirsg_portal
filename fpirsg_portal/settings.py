@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*q=$)y=k1elvx8_dsudu!2d8&bz)$v8im=a7epl%@6rb4z#a^u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['fpirsgportal.pythonanywhere.com', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = [
@@ -124,6 +124,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 STORAGES = {
     "default": {
@@ -137,6 +138,7 @@ STORAGES = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
@@ -149,6 +151,13 @@ LOGIN_URL = 'login'
 
 # লাইভ সার্ভারে লগইন ও রিডাইরেক্ট ৫০০ এরর ফিক্স
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+# Poduction এ এই ৩টি সেটিংস অবশ্যই True করতে হবে, না হলে সিকিউরিটি সংক্রান্ত অনেক সমস্যা হতে পারে
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+
+# for local development, you can set these to False
+# এই ৩টি লাইন এভাবে পরিবর্তন করুন
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'

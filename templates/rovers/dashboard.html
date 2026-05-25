@@ -4,188 +4,113 @@
 
 {% block content %}
 {% if user.is_staff %}
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
-        <p class="text-gray-600 dark:text-gray-400">Overview of the FPIRSG system and recent activities.</p>
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
+    <p class="text-gray-600 dark:text-gray-400">Overview of the FPIRSG system and recent activities.</p>
+</div>
+
+{% if messages %}
+<div class="mb-6 space-y-2">
+    {% for message in messages %}
+    <div
+        class="p-4 rounded-xl text-sm font-medium border {% if message.tags == 'success' %} bg-green-50 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800 {% else %} bg-red-50 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800 {% endif %}">
+        {{ message }}
     </div>
+    {% endfor %}
+</div>
+{% endif %}
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex items-center">
-            <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mr-4">
-                <i class="fas fa-users text-2xl"></i>
-            </div>
-            <div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Registered Rovers</p>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_rovers }}</p>
-            </div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex items-center">
+        <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mr-4">
+            <i class="fas fa-users text-2xl"></i>
         </div>
-        
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex items-center">
-            <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 mr-4">
-                <i class="fas fa-user-clock text-2xl"></i>
-            </div>
-            <div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Pending Requests</p>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ pending_requests }}</p>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex items-center">
-            <div class="p-3 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 mr-4">
-                <i class="fas fa-tint text-2xl"></i>
-            </div>
-            <div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Blood Donors</p>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ active_donors }}</p>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex items-center">
-            <div class="p-3 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 mr-4">
-                <i class="fas fa-wallet text-2xl"></i>
-            </div>
-            <div>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Funds Collected</p>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">৳ {{ total_funds }}</p>
-            </div>
+        <div>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Registered Rovers</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ total_rovers }}</p>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Blood Group Distribution</h3>
-            <div class="relative h-64 w-full flex justify-center">
-                <canvas id="bloodGroupChart"></canvas>
-            </div>
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex items-center">
+        <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 mr-4">
+            <i class="fas fa-user-clock text-2xl"></i>
         </div>
-
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Rovers by Department</h3>
-            <div class="relative h-64 w-full">
-                <canvas id="departmentChart"></canvas>
-            </div>
+        <div>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Pending Requests</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ pending_requests }}</p>
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
-        <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Pending Approvals</h3>
-            <a href="#" class="text-sm text-primary dark:text-green-400 font-medium hover:underline">View All</a>
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex items-center">
+        <div class="p-3 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 mr-4">
+            <i class="fas fa-tint text-2xl"></i>
         </div>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-white dark:bg-gray-800">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rover</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Department</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Session</th>
-                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    {% for p in pending_rovers_list %}
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    {% if p.profile_pic %}
-                                        <img class="h-10 w-10 rounded-full object-cover" src="{{ p.profile_pic.url }}" alt="">
-                                    {% else %}
-                                        <div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 font-bold">
-                                            {{ p.name_en|make_list|first }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900 dark:text-white">{{ p.name_en }}</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">Roll: {{ p.roll_no }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {{ p.department }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {{ p.session }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div class="flex justify-end space-x-2">
-                                <form method="post" action="{% url 'approve_rover' p.pk %}" class="inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 bg-green-100 dark:bg-green-900/30 p-2 rounded-lg transition-colors" title="Approve">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </form>
-                                <form method="post" action="{% url 'reject_rover' p.pk %}" class="inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 bg-red-100 dark:bg-red-900/30 p-2 rounded-lg transition-colors" title="Reject" onclick="return confirm('Are you sure you want to reject and delete this registration?');">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
-                            No pending approvals at the moment.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Blood Donors</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ active_donors }}</p>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div class="px-6 py-5 bg-gradient-to-r from-primary to-green-700 text-white">
-                <h3 class="text-lg font-semibold"><i class="fas fa-cog mr-2"></i>Fee Configuration</h3>
-            </div>
-            <div class="p-6">
-                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Set the fee amount and frequency (Weekly/Monthly) for all rovers</p>
-                <a href="{% url 'fee_structure_edit' %}" class="inline-block px-4 py-2 bg-primary hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
-                    <i class="fas fa-edit mr-1"></i>Configure Fee
-                </a>
-            </div>
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex items-center">
+        <div class="p-3 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 mr-4">
+            <i class="fas fa-wallet text-2xl"></i>
         </div>
+        <div>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Funds Collected</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">৳ {{ total_funds }}</p>
+        </div>
+    </div>
+</div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div class="px-6 py-5 bg-gradient-to-r from-primary to-green-700 text-white">
-                <h3 class="text-lg font-semibold"><i class="fas fa-list-check mr-2"></i>Manage Rover Fees</h3>
-            </div>
-            <div class="p-6">
-                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">View, manage, and mark fees as paid. Next fees auto-generate.</p>
-                <a href="{% url 'rover_fees_list' %}" class="inline-block px-4 py-2 bg-primary hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
-                    <i class="fas fa-dollar-sign mr-1"></i>Manage Fees
-                </a>
-            </div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Blood Group Distribution</h3>
+        <div id="bgChartContainer" class="relative h-64 w-full flex justify-center items-center">
+            <canvas id="bloodGroupChart"></canvas>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Setup Chart Defaults for Dark Mode support
-            const isDark = document.documentElement.classList.contains('dark');
-            Chart.defaults.color = isDark ? '#9ca3af' : '#6b7280';
-            Chart.defaults.font.family = 'Inter';
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Rovers by Department</h3>
+        <div id="deptChartContainer" class="relative h-64 w-full flex justify-center items-center">
+            <canvas id="departmentChart"></canvas>
+        </div>
+    </div>
+</div>
 
-            // Blood Group Data
-            const bgDataRaw = {{ bg_distribution|safe }};
-            const bgLabels = bgDataRaw.map(item => item.blood_group || 'Unknown');
+{{ bg_distribution|json_script:"bg-data-json" }}
+{{ dept_distribution|json_script:"dept-data-json" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // ডার্ক মোড ও ফন্ট কনফিগারেশন
+        const isDark = document.documentElement.classList.contains('dark');
+        Chart.defaults.color = isDark ? '#9ca3af' : '#6b7280';
+        Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+
+        // জেসন স্ক্রিপ্ট থেকে সেফলি ডেটা রিড করা
+        const bgDataRaw = JSON.parse(document.getElementById('bg-data-json').textContent || '[]');
+        const deptDataRaw = JSON.parse(document.getElementById('dept-data-json').textContent || '[]');
+
+        // ==================== ১. BLOOD GROUP CHART ====================
+        const bgCanvas = document.getElementById('bloodGroupChart');
+        if (bgCanvas && bgDataRaw.length > 0) {
+            const bgLabels = bgDataRaw.map(item => item.blood_group ? item.blood_group : 'Unknown');
             const bgData = bgDataRaw.map(item => item.count);
-            
-            const bgChartCtx = document.getElementById('bloodGroupChart').getContext('2d');
-            new Chart(bgChartCtx, {
+
+            new Chart(bgCanvas.getContext('2d'), {
                 type: 'doughnut',
                 data: {
                     labels: bgLabels,
                     datasets: [{
                         data: bgData,
-                        backgroundColor: [
-                            '#ef4444', '#f97316', '#f59e0b', '#84cc16', 
-                            '#10b981', '#06b6d4', '#3b82f6', '#8b5cf6'
-                        ],
+                        backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#06b6d4', '#3b82f6', '#8b5cf6'],
                         borderWidth: isDark ? 2 : 1,
                         borderColor: isDark ? '#1f2937' : '#ffffff'
                     }]
@@ -194,23 +119,33 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'right' }
+                        legend: {
+                            position: 'right',
+                            labels: { boxWidth: 12, padding: 10 }
+                        }
                     }
                 }
             });
+        } else if (bgCanvas) {
+            document.getElementById('bgChartContainer').innerHTML = `
+                <div class="text-center p-4">
+                    <span class="text-2xl block mb-1">📊</span>
+                    <p class="text-xs text-gray-400 dark:text-gray-500">কোনো অনুমোদিত রভারের রক্তদান তথ্য নেই</p>
+                </div>`;
+        }
 
-            // Department Data
-            const deptDataRaw = {{ dept_distribution|safe }};
-            const deptLabels = deptDataRaw.map(item => item.department);
+        // ==================== ২. DEPARTMENT CHART ====================
+        const deptCanvas = document.getElementById('departmentChart');
+        if (deptCanvas && deptDataRaw.length > 0) {
+            const deptLabels = deptDataRaw.map(item => item.department ? item.department : 'Unknown');
             const deptData = deptDataRaw.map(item => item.count);
 
-            const deptChartCtx = document.getElementById('departmentChart').getContext('2d');
-            new Chart(deptChartCtx, {
+            new Chart(deptCanvas.getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: deptLabels,
                     datasets: [{
-                        label: 'Rovers',
+                        label: 'টোটাল রভার',
                         data: deptData,
                         backgroundColor: '#006b3f',
                         borderRadius: 4
@@ -225,164 +160,465 @@
                             ticks: { precision: 0 },
                             grid: { color: isDark ? '#374151' : '#e5e7eb' }
                         },
-                        x: {
-                            grid: { display: false }
-                        }
+                        x: { grid: { display: false } }
                     },
-                    plugins: {
-                        legend: { display: false }
-                    }
+                    plugins: { legend: { display: false } }
                 }
             });
-        });
-    </script>
+        } else if (deptCanvas) {
+            document.getElementById('deptChartContainer').innerHTML = `
+                <div class="text-center p-4">
+                    <span class="text-2xl block mb-1">🏢</span>
+                    <p class="text-xs text-gray-400 dark:text-gray-500">কোনো অনুমোদিত রভারের ডিপার্টমেন্ট তথ্য নেই</p>
+                </div>`;
+        }
+    });
+</script>
 
-{% else %}
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Welcome, {{ user.username }}</h1>
-        <p class="text-gray-600 dark:text-gray-400">Here is your FPIRSG profile overview.</p>
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8">
+    <div class="mb-5">
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <i class="fas fa-user-check text-green-600"></i> Quick Update Rank & Stage
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Select a verified rover profile to quickly update their rank
+            and stage without going into individual profiles.</p>
     </div>
 
-    {% if profile %}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div class="col-span-1">
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden">
-                    <div class="p-6 text-center">
-                        <div class="relative w-32 h-32 mx-auto mb-4 rounded-full shadow-lg border-4 border-white dark:border-gray-800 overflow-hidden">
-                            {% if profile.profile_pic %}
-                                <img src="{{ profile.profile_pic.url }}" alt="Profile Picture" class="w-full h-full object-cover">
-                            {% else %}
-                                <div class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-4xl text-gray-400">
-                                    {{ profile.name_en|make_list|first }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ profile.name_en }}</h2>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ profile.department }} Dept.</p>
-                        
-                        {% if profile.is_approved %}
-                            <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
-                                <i class="fas fa-check-circle mr-1.5"></i>
-                                Approved
-                            </div>
-                        {% else %}
-                            <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
-                                <i class="fas fa-clock mr-1.5"></i>
-                                Pending Approval
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    {% if profile.is_approved %}
-                    <div class="bg-gradient-to-r from-primary to-green-700 p-6 text-white text-center">
-                        <p class="text-sm text-green-200 mb-1">Rover Form Number</p>
-                        <div class="text-2xl font-mono font-bold tracking-wider bg-black/20 py-2 rounded-lg backdrop-blur-sm shadow-inner">
-                            {{ profile.form_number }}
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
+    <form method="POST" action="" class="space-y-4">
+        {% csrf_token %}
+        <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-xl border border-gray-100 dark:border-gray-700/60">
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">
+                <i class="fas fa-users mr-1"></i> Select Approved Rover Profile to Update Rank & Stage
+            </label>
+            {{ form.rover_profile_select }}
+        </div>
+
+        <div
+            class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-green-50/30 dark:bg-green-950/10 p-4 rounded-xl border border-green-100/50 dark:border-green-900/20">
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Assign Rover
+                    Rank</label>
+                {{ form.rank }}
             </div>
-            
-            <div class="col-span-1 md:col-span-2">
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 p-6 sm:p-8">
-                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 border-b border-gray-200 dark:border-gray-700 pb-2">Profile Details</h3>
-                    
-                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6">
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Roll Number</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-white font-medium">{{ profile.roll_no }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Session</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ profile.session }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Semester & Shift</dt>
-                            <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ profile.semester }} Semester, {{ profile.shift }} Shift</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Blood Group</dt>
-                            <dd class="mt-1 text-sm font-bold text-red-600 dark:text-red-400">{{ profile.blood_group }}</dd>
-                        </div>
-                    </dl>
-                </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Assign Rover
+                    Stage</label>
+                {{ form.stage }}
             </div>
         </div>
 
-        {% if notices %}
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
-            <div class="px-6 py-4 bg-gradient-to-r from-primary to-green-700 text-white">
-                <h3 class="text-lg font-semibold"><i class="fas fa-bell mr-2"></i>Latest Notices</h3>
+        <div class="flex justify-end pt-2">
+            <button type="submit" name="add_rover_submit"
+                class="w-full sm:w-auto px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2">
+                <i class="fas fa-save"></i> Update Profile
+            </button>
+        </div>
+    </form>
+</div>
+
+<div
+    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
+    <div
+        class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Pending Approvals</h3>
+        <a href="{% url 'rover_list_all' %}"
+            class="text-sm text-green-600 dark:text-green-400 font-medium hover:underline">View All</a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-white dark:bg-gray-800">
+                <tr>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Rover</th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Department</th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Session</th>
+                    <th scope="col"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {% for p in pending_rovers_list %}
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                {% if p.profile_pic %}
+                                <img class="h-10 w-10 rounded-full object-cover" src="{{ p.profile_pic.url }}" alt="">
+                                {% else %}
+                                <div
+                                    class="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400 font-bold">
+                                    {{ p.name_en|make_list|first }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ p.name_en }}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">Roll: {{ p.roll_no }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ p.department }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ p.session }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex justify-end space-x-2">
+                            <form method="post" action="{% url 'approve_rover' p.pk %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit"
+                                    class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 bg-green-100 dark:bg-green-900/30 p-2 rounded-lg transition-colors"
+                                    title="Approve">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </form>
+                            <form method="post" action="{% url 'reject_rover' p.pk %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit"
+                                    class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 bg-red-100 dark:bg-red-900/30 p-2 rounded-lg transition-colors"
+                                    title="Reject"
+                                    onclick="return confirm('Are you sure you want to reject and delete this registration?');">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">No pending approvals
+                        at the moment.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="px-6 py-5 bg-gradient-to-r from-green-600 to-green-700 text-white">
+            <h3 class="text-lg font-semibold"><i class="fas fa-clipboard-check mr-2"></i>Verify Profiles</h3>
+        </div>
+        <div class="p-6">
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Check profile completeness and verify data for all
+                rovers</p>
+            <a href="{% url 'rover_verification' %}"
+                class="inline-block px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
+                <i class="fas fa-check-double mr-1"></i>Verify
+            </a>
+        </div>
+    </div>
+
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="px-6 py-5 bg-gradient-to-r from-green-600 to-green-700 text-white">
+            <h3 class="text-lg font-semibold"><i class="fas fa-users-cog mr-2"></i>Manage All Rovers</h3>
+        </div>
+        <div class="p-6">
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">View detailed profiles and manage all rover
+                registrations</p>
+            <a href="{% url 'rover_list_all' %}"
+                class="inline-block px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
+                <i class="fas fa-eye mr-1"></i>View All
+            </a>
+        </div>
+    </div>
+
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="px-6 py-5 bg-gradient-to-r from-green-600 to-green-700 text-white">
+            <h3 class="text-lg font-semibold"><i class="fas fa-cog mr-2"></i>Fee Configuration</h3>
+        </div>
+        <div class="p-6">
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Set the fee amount and frequency (Weekly/Monthly)
+                for all rovers</p>
+            <a href="{% url 'fee_structure_edit' %}"
+                class="inline-block px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
+                <i class="fas fa-edit mr-1"></i>Configure Fee
+            </a>
+        </div>
+    </div>
+
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="px-6 py-5 bg-gradient-to-r from-green-600 to-green-700 text-white">
+            <h3 class="text-lg font-semibold"><i class="fas fa-list-check mr-2"></i>Manage Rover Fees</h3>
+        </div>
+        <div class="p-6">
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">View, manage, and mark fees as paid. Next fees
+                auto-generate.</p>
+            <a href="{% url 'rover_fees_list' %}"
+                class="inline-block px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
+                <i class="fas fa-dollar-sign mr-1"></i>Manage Fees
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const isDark = document.documentElement.classList.contains('dark');
+        Chart.defaults.color = isDark ? '#9ca3af' : '#6b7280';
+        Chart.defaults.font.family = 'Inter';
+
+        // Blood Group Data ✅ (Fixed Spacing Error)
+        const bgDataRaw = {{ bg_distribution| safe
+    }};
+    const bgLabels = bgDataRaw.map(item => item.blood_group || 'Unknown');
+    const bgData = bgDataRaw.map(item => item.count);
+
+    const bgChartCtx = document.getElementById('bloodGroupChart').getContext('2d');
+    new Chart(bgChartCtx, {
+        type: 'doughnut',
+        data: {
+            labels: bgLabels,
+            datasets: [{
+                data: bgData,
+                backgroundColor: [
+                    '#ef4444', '#f97316', '#f59e0b', '#84cc16',
+                    '#10b981', '#06b6d4', '#3b82f6', '#8b5cf6'
+                ],
+                borderWidth: isDark ? 2 : 1,
+                borderColor: isDark ? '#1f2937' : '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right' }
+            }
+        }
+    });
+
+    // Department Data ✅ (Fixed Syntax)
+    const deptDataRaw = {{ dept_distribution| safe }};
+    const deptLabels = deptDataRaw.map(item => item.department);
+    const deptData = deptDataRaw.map(item => item.count);
+
+    const deptChartCtx = document.getElementById('departmentChart').getContext('2d');
+    new Chart(deptChartCtx, {
+        type: 'bar',
+        data: {
+            labels: deptLabels,
+            datasets: [{
+                label: 'Rovers',
+                data: deptData,
+                backgroundColor: '#006b3f',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 },
+                    grid: { color: isDark ? '#374151' : '#e5e7eb' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+    });
+</script>
+
+{% else %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Welcome, {{ user.username }}</h1>
+    <p class="text-gray-600 dark:text-gray-400">Here is your FPIRSG profile overview.</p>
+</div>
+
+{% if profile %}
+notice.created<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+    <div class="col-span-1">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div class="p-6 text-center">
+                <div
+                    class="relative w-32 h-32 mx-auto mb-4 rounded-full shadow-lg border-4 border-white dark:border-gray-800 overflow-hidden">
+                    {% if profile.profile_pic %}
+                    <img src="{{ profile.profile_pic.url }}" alt="Profile Picture" class="w-full h-full object-cover">
+                    {% else %}
+                    <div
+                        class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-4xl text-gray-400">
+                        {{ profile.name_en|make_list|first }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ profile.name_en }}</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ profile.department }} Dept.</p>
+
+                {% if profile.is_approved %}
+                <div
+                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                    <i class="fas fa-check-circle mr-1.5"></i>Approved
+                </div>
+                {% else %}
+                <div
+                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                    <i class="fas fa-clock mr-1.5"></i>Pending Approval
+                </div>
+                {% endif %}
             </div>
-            <div class="divide-y divide-gray-200 dark:divide-gray-700">
-                {% for notice in notices %}
-                <div class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ notice.title }}</h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">{{ notice.content }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-500"><i class="fas fa-calendar mr-1"></i>{{ notice.created_at|date:"M d, Y" }}</p>
+
+            {% if profile.is_approved %}
+            <div class="bg-gradient-to-r from-green-600 to-green-700 p-6 text-white text-center">
+                <p class="text-sm text-green-200 mb-1">Rover Form Number</p>
+                <div
+                    class="text-2xl font-mono font-bold tracking-wider bg-black/20 py-2 rounded-lg backdrop-blur-sm shadow-inner">
+                    {{ profile.form_number }}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Profile Details</h3>
+
+        <div class="grid grid-cols-2 gap-y-4 gap-x-6">
+            <div>
+                <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Roll Number</p>
+                <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ profile.roll_no }}</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Session</p>
+                <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ profile.session }}</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Semester & Shift</p>
+                <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                    {{ profile.semester }} Semester, {% if profile.shift %}{{ profile.shift }}{% else %}N/A{% endif %}
+                    Shift
+                </p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">Blood Group</p>
+                <p class="text-sm font-bold text-red-600 dark:text-red-400">{{ profile.blood_group }}</p>
+            </div>
+
+            <div class="border-t border-gray-100 dark:border-gray-700 pt-2 col-span-1">
+                <p class="text-xs text-gray-400 dark:text-gray-500 font-medium mb-1">Rover Stage</p>
+                {% if profile.stage %}
+                <span
+                    class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
+                    {{ profile.stage }}
+                </span>
+                {% else %}
+                <span class="text-xs text-gray-400 italic">Not Assigned</span>
+                {% endif %}
+            </div>
+
+            <div class="border-t border-gray-100 dark:border-gray-700 pt-2 col-span-1">
+                <p class="text-xs text-gray-400 dark:text-gray-500 font-medium mb-1">Rover Rank</p>
+                {% if profile.rank %}
+                <span
+                    class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 border border-purple-100 dark:border-purple-800">
+                    {{ profile.rank }}
+                </span>
+                {% else %}
+                <span class="text-xs text-gray-400 italic">Not Assigned</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if notices %}
+<div
+    class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
+    <div class="px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white">
+        <h3 class="text-lg font-semibold"><i class="fas fa-bell mr-2"></i>Latest Notices</h3>
+    </div>
+    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+        {% for notice in notices %}
+        <div class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+            <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ notice.title }}</h4>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">{{ notice.content }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-500"><i class="fas fa-calendar mr-1"></i>{{ notice.created_at|date:"M d, Y" }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div
+    class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden">
+    <div class="px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white">
+        <h3 class="text-lg font-semibold"><i class="fas fa-wallet mr-2"></i>Fee Information</h3>
+    </div>
+    {% if fee_structure %}
+    <div class="p-6">
+        <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700">
+            <p class="text-sm text-gray-700 dark:text-gray-300"><strong>Fee Structure:</strong> ৳{{ fee_structure.amount}} per {{ fee_structure.get_frequency_display|lower }}</p>
+        </div>
+
+        {% if pending_fees %}
+        <div class="mb-6">
+            <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-4">Pending Fees</h4>
+            <div class="space-y-3">
+                {% for fee in pending_fees %}
+                <div
+                    class="p-4 border border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <p class="font-medium text-gray-900 dark:text-white">৳{{ fee.amount }}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Due: {{ fee.due_date|date:"M d, Y" }}
+                            </p>
+                        </div>
+                        <span
+                            class="px-3 py-1 bg-yellow-200 dark:bg-yellow-700 text-yellow-800 dark:text-yellow-200 text-xs font-medium rounded-full">
+                            {{ fee.get_status_display }}
+                        </span>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
+        {% else %}
+        <div
+            class="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:text-green-300 text-center">
+            <p class="text-green-800 dark:text-green-300"><i class="fas fa-check-circle mr-2"></i>No pending fees!</p>
+        </div>
         {% endif %}
-
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div class="px-6 py-4 bg-gradient-to-r from-primary to-green-700 text-white">
-                <h3 class="text-lg font-semibold"><i class="fas fa-wallet mr-2"></i>Fee Information</h3>
-            </div>
-            {% if fee_structure %}
-            <div class="p-6">
-                <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700">
-                    <p class="text-sm text-gray-700 dark:text-gray-300"><strong>Fee Structure:</strong> ৳{{ fee_structure.amount }} per {{ fee_structure.get_frequency_display|lower }}</p>
-                </div>
-
-                {% if pending_fees %}
-                <div class="mb-6">
-                    <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-4">Pending Fees</h4>
-                    <div class="space-y-3">
-                        {% for fee in pending_fees %}
-                        <div class="p-4 border border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg">
-                            <div class="flex justify-between items-start mb-2">
-                                <div>
-                                    <p class="font-medium text-gray-900 dark:text-white">৳{{ fee.amount }}</p>
-                                    <p class="text-xs text-gray-600 dark:text-gray-400">Due: {{ fee.due_date|date:"M d, Y" }}</p>
-                                </div>
-                                <span class="px-3 py-1 bg-yellow-200 dark:bg-yellow-700 text-yellow-800 dark:text-yellow-200 text-xs font-medium rounded-full">
-                                    {{ fee.get_status_display }}
-                                </span>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                {% else %}
-                <div class="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-700 text-center">
-                    <p class="text-green-800 dark:text-green-300"><i class="fas fa-check-circle mr-2"></i>No pending fees!</p>
-                </div>
-                {% endif %}
-            </div>
-            {% else %}
-            <div class="p-6 text-center text-gray-500 dark:text-gray-400">
-                <p><i class="fas fa-info-circle mr-2"></i>Fee structure not yet configured by admin</p>
-            </div>
-            {% endif %}
-        </div>
+    </div>
     {% else %}
-        <div class="bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 p-4 rounded-r-lg">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-exclamation-triangle text-yellow-400"></i>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm text-yellow-700 dark:text-yellow-200">
-                        You have not created a Rover Profile yet. <a href="{% url 'register' %}" class="font-bold underline hover:text-yellow-800 dark:hover:text-yellow-100">Click here to register</a>.
-                    </p>
-                </div>
-            </div>
-        </div>
+    <div class="p-6 text-center text-gray-500 dark:text-gray-400">
+        <p><i class="fas fa-info-circle mr-2"></i>Fee structure not yet configured by admin</p>
+    </div>
     {% endif %}
+</div>
+{% else %}
+<div class="bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+    <div class="flex">
+        <div class="flex-shrink-0">
+            <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+        </div>
+        <div class="ml-3">
+            <p class="text-sm text-yellow-700 dark:text-yellow-200">
+                You have not created a Rover Profile yet. <a href="{% url 'register' %}"
+                    class="font-bold underline hover:text-yellow-800 dark:hover:text-yellow-100">Click here to
+                    register</a>.
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endif %}
 
 {% endblock %}

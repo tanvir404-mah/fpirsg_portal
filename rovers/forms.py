@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.auth.models import User
-
 from .models import RoverProfile, Notice, FundTransaction, FeeStructure, RoverFee
 
 INPUT_CLASS = 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white transition'
@@ -55,7 +54,7 @@ class RoverRegistrationForm(forms.ModelForm):
             'ssc_year':        forms.NumberInput(attrs={'class': INPUT_CLASS}),
             'ssc_gpa':         forms.NumberInput(attrs={'class': INPUT_CLASS, 'step': '0.01'}),
             'department':      forms.Select(attrs={'class': SELECT_CLASS}),
-            'session':         forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'e.g. 2023-24'}),
+            # 'session' widget সরিয়ে দেওয়া হয়েছে এখান থেকে যেন এটি ড্রপডাউন ফিল্ড হয়
             'semester':        forms.Select(attrs={'class': SELECT_CLASS}),
             'shift':           forms.Select(attrs={'class': SELECT_CLASS}),
             'roll_no':         forms.TextInput(attrs={'class': INPUT_CLASS}),
@@ -69,6 +68,26 @@ class RoverRegistrationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
+        # ১. সেশন ফিল্ডকে কাস্টম ড্রপডাউনে রূপান্তর (কোনো ডিফল্ট ভ্যালু ছাড়া)
+        SESSION_CHOICES = [
+            ('', '-- Select Session --'),  # প্রথম অপশন খালি, ইউজারকে সিলেক্ট করতে বাধ্য করবে
+            ('2022-23', '2022-23'),
+            ('2023-24', '2023-24'),
+            ('2024-25', '2024-25'),
+            ('2025-26', '2025-26'),
+            ('2026-27', '2026-27'),
+            ('2027-28', '2027-28'),
+            ('2028-29', '2028-29'),
+            ('2029-30', '2029-30'),
+        ]
+        self.fields['session'] = forms.ChoiceField(
+            choices=SESSION_CHOICES,
+            widget=forms.Select(attrs={'class': SELECT_CLASS}),
+            required=True,
+            label="Session"
+        )
+        
         # Apply INPUT_CLASS to all plain address fields
         addr_fields = [
             'present_village','present_post','present_post_code',
@@ -115,23 +134,25 @@ class RoverRegistrationForm(forms.ModelForm):
 class FeeStructureForm(forms.ModelForm):
     class Meta:
         model = FeeStructure
-        fields = ['amount', 'frequency', 'is_active']
+        fields = ['amount', 'frequency', 'description', 'is_active']
         widgets = {
-            'amount': forms.NumberInput(attrs={'class': INPUT_CLASS, 'step': '0.01'}),
-            'frequency': forms.Select(attrs={'class': SELECT_CLASS}),
-            'is_active': forms.CheckboxInput(attrs={'class': CHECKBOX_CLASS}),
+            'amount':       forms.NumberInput(attrs={'class': INPUT_CLASS, 'step': '0.01'}),
+            'frequency':    forms.Select(attrs={'class': SELECT_CLASS}),
+            'description':  forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'e.g., Monthly Rover Fund'}),
+            'is_active':    forms.CheckboxInput(attrs={'class': CHECKBOX_CLASS}),
         }
+
 
 class RoverFeeForm(forms.ModelForm):
     class Meta:
         model = RoverFee
-        fields = ['rover', 'amount', 'frequency', 'status', 'due_date']
+        fields = ['amount', 'frequency', 'status', 'due_date', 'paid_date']
         widgets = {
-            'rover': forms.Select(attrs={'class': SELECT_CLASS}),
-            'amount': forms.NumberInput(attrs={'class': INPUT_CLASS, 'step': '0.01'}),
+            'amount':    forms.NumberInput(attrs={'class': INPUT_CLASS, 'step': '0.01'}),
             'frequency': forms.Select(attrs={'class': SELECT_CLASS}),
-            'status': forms.Select(attrs={'class': SELECT_CLASS}),
-            'due_date': forms.DateInput(attrs={'class': INPUT_CLASS, 'type': 'date'}),
+            'status':    forms.Select(attrs={'class': SELECT_CLASS}),
+            'due_date':  forms.DateInput(attrs={'class': INPUT_CLASS, 'type': 'date'}),
+            'paid_date': forms.DateInput(attrs={'class': INPUT_CLASS, 'type': 'date'}),
         }
 
 
@@ -159,32 +180,6 @@ class FundTransactionForm(forms.ModelForm):
         }
 
 
-class FeeStructureForm(forms.ModelForm):
-    class Meta:
-        model = FeeStructure
-        fields = ['amount', 'frequency', 'description', 'is_active']
-        widgets = {
-            'amount':       forms.NumberInput(attrs={'class': INPUT_CLASS, 'step': '0.01'}),
-            'frequency':    forms.Select(attrs={'class': SELECT_CLASS}),
-            'description':  forms.TextInput(attrs={'class': INPUT_CLASS, 'placeholder': 'e.g., Monthly Rover Fund'}),
-            'is_active':    forms.CheckboxInput(attrs={'class': CHECKBOX_CLASS}),
-        }
-
-
-class RoverFeeForm(forms.ModelForm):
-    class Meta:
-        model = RoverFee
-        fields = ['amount', 'frequency', 'status', 'due_date', 'paid_date']
-        widgets = {
-            'amount':    forms.NumberInput(attrs={'class': INPUT_CLASS, 'step': '0.01'}),
-            'frequency': forms.Select(attrs={'class': SELECT_CLASS}),
-            'status':    forms.Select(attrs={'class': SELECT_CLASS}),
-            'due_date':  forms.DateInput(attrs={'class': INPUT_CLASS, 'type': 'date'}),
-            'paid_date': forms.DateInput(attrs={'class': INPUT_CLASS, 'type': 'date'}),
-        }
-# rovers/forms.py এর নিচে যোগ করুন
-from .models import RoverFee
-
 class AdminRoverFeeForm(forms.ModelForm):
     class Meta:
         model = RoverFee
@@ -195,3 +190,37 @@ class AdminRoverFeeForm(forms.ModelForm):
             'frequency': forms.Select(attrs={'class': 'form-select'}),
             'due_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
+
+# ==================== CUSTOM ADMIN ROVER PROFILE FORM ====================
+class AdminRoverProfileForm(forms.ModelForm):
+    # শুধুমাত্র অলরেডি অ্যাপ্রুভড রভার প্রোফাইল সিলেক্ট করার ড্রপডাউন ফিল্ড
+    rover_profile_select = forms.ModelChoiceField(
+        queryset=RoverProfile.objects.filter(is_approved=True),
+        required=True,
+        empty_label="--- Select Approved Rover Profile ---",
+        widget=forms.Select(attrs={'class': SELECT_CLASS})
+    )
+
+    class Meta:
+        model = RoverProfile
+        # এই কুইক ফর্মে আমরা শুধু rank এবং stage ফিল্ড ইনপুট নিচ্ছি
+        fields = ['rank', 'stage']
+        
+        widgets = {
+            # নতুন যুক্ত হওয়া র‍্যাংক এবং স্টেজ ড্রপডাউন (আপনার SELECT_CLASS থিমে)
+            'rank':  forms.Select(attrs={'class': SELECT_CLASS}),
+            'stage': forms.Select(attrs={'class': SELECT_CLASS}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # শুধুমাত্র অ্যাপ্রুভড রভার প্রোফাইল রোল নম্বর অনুযায়ী সর্ট হয়ে ড্রপডাউনে দেখাবে
+        self.fields['rover_profile_select'].queryset = RoverProfile.objects.filter(is_approved=True).order_by('roll_no')
+        
+        # ড্রপডাউনের ভেতরে রোল এবং নাম একসাথে সুন্দর করে দেখানোর জন্য কাস্টম লেবেল
+        self.fields['rover_profile_select'].label_from_instance = lambda obj: f"Roll: {obj.roll_no} — {obj.name_en or 'No Name'}"
+        
+        # র‍্যাংক ও স্টেজের প্রথম অপশনটি সুন্দর দেখানোর জন্য ফাঁকা বা ডিফল্ট টেক্সট সেট করা
+        self.fields['rank'].empty_label = "-- Select Rank --"
+        self.fields['stage'].empty_label = "-- Select Stage --"
